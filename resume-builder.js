@@ -310,8 +310,8 @@ document.getElementById('add-experience-btn').addEventListener('click', function
     e.preventDefault();
     
     if (!document.getElementById('full_name').value || !document.getElementById('email').value) {
-      alert('Please fill in required fields (Name and Email)');
-      return;
+        alert('Please fill in required fields (Name and Email)');
+        return;
     }
   
     const previewHTML = `
@@ -351,4 +351,48 @@ document.getElementById('add-experience-btn').addEventListener('click', function
     `;
   
     document.getElementById('resume-preview').innerHTML = previewHTML;
-  });
+    // Add download button with specific class
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = 'btn btn-success mt-3 download-pdf-btn';
+    downloadBtn.innerHTML = '<i class="fas fa-download me-2"></i>Download PDF';
+    downloadBtn.onclick = generatePDF;
+    
+    document.getElementById('resume-preview').appendChild(downloadBtn); 
+
+});
+
+// Add this function at the bottom of your JS file
+// In your generatePDF function:
+function generatePDF() {
+    const previewContent = document.getElementById('resume-preview');
+    
+    // Create temporary PDF version
+    const pdfVersion = previewContent.cloneNode(true);
+    pdfVersion.classList.add('pdf-page'); // Add PDF dimension class
+    pdfVersion.querySelector('.download-pdf-btn')?.remove();
+    
+    // Add to hidden container
+    const hiddenContainer = document.createElement('div');
+    hiddenContainer.style.position = 'fixed';
+    hiddenContainer.style.left = '-9999px';
+    hiddenContainer.appendChild(pdfVersion);
+    document.body.appendChild(hiddenContainer);
+
+    html2canvas(pdfVersion, {
+        scale: 2,
+        useCORS: true,
+        windowWidth: 210 * 11.81, // Convert 210mm to pixels (1mm ≈ 11.81px)
+        windowHeight: 297 * 11.81
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jspdf.jsPDF({
+            unit: 'mm',
+            format: 'a4',
+            hotfixes: ["px_scaling"]
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+        document.body.removeChild(hiddenContainer);
+        pdf.save('resume.pdf');
+    });
+}

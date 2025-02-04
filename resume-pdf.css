@@ -1,0 +1,54 @@
+/* Resume Preview Screen Styles */
+#resume-preview .card {
+    background: white;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    margin: 2rem 0;
+    padding: 2rem;
+}
+
+.download-pdf-btn {
+    transition: all 0.3s ease;
+}
+
+/* PDF-specific Styles */
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background: white !important;
+    }
+    
+    #resume-preview .card {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .download-pdf-btn,
+    .remove-experience-btn {
+        display: none !important;
+    }
+}
+
+/* PDF Dimensions (A4 Size) */
+.pdf-page {
+    width: 210mm !important;    /* A4 width */
+    min-height: 297mm !important; /* A4 height */
+    margin: 0 auto;
+    padding: 15mm !important;
+    background: white;
+}
+
+.pdf-page * {
+    color: #000 !important;
+}
+
+/* Prevent content breaks */
+.section-title {
+    page-break-after: avoid;
+}
+
+.dynamic-entry {
+    page-break-inside: avoid;
+}
